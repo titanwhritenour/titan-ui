@@ -1,0 +1,208 @@
+/* ==== TITAN-UI BEGIN v0.3.0 ====================================================================
+   The Titan house style. ONE source: the titan-ui repository (until that exists, Production
+   Control v3.0 holds the master copy). This block is copied into every app's theme.css
+   unchanged and is checked byte-for-byte - never edit it inside another app.
+   A form opts in by giving its top content panel the role `tui`. Everything else is done with
+   the roles below; an app adds no colours, fonts or sizes of its own.
+     tui            root (content panel)        tui-toolbar    a toolbar strip (FlowPanel)
+     tui-primary    the one loud button         tui-danger     a destructive button
+     tui-chip       filter chip (Link)          tui-on         the active chip
+     tui-pill       state pill (Label / Link)   + one state: tui-neutral tui-info tui-ok
+                                                  tui-warn tui-danger tui-special tui-void
+     tui-meta       small muted mono text       tui-late       past-due value (bold + red)
+     tui-text-warn / -danger / -ok / -info / -special / -muted  a word in a tone (works in popups too)
+     tui-row-plan / tui-row-stale               tinted data rows
+   State is never colour alone: a pill, chip or late value always carries its word.
+   ============================================================================================ */
+:root {
+  --tui-canvas: #ECEFF3; --tui-card: #FFFFFF; --tui-chrome: #F5F7FA; --tui-chrome-2: #EDF1F6;
+  --tui-ink: #141B24; --tui-ink-soft: #334155; --tui-muted: #5A6677;
+  --tui-line: #D4DBE3; --tui-line-strong: #9AA6B5;
+  --tui-accent: #0F4C81; --tui-accent-hover: #0B3B66; --tui-accent-ink: #FFFFFF; --tui-accent-soft: #E0ECF8;
+  --tui-neutral-fg: #475569; --tui-neutral-bg: #F1F5F9; --tui-neutral-bd: #94A3B8;
+  --tui-info-fg: #1E3A8A; --tui-info-bg: #DBEAFE; --tui-info-bd: #3B82F6;
+  --tui-ok-fg: #14532D; --tui-ok-bg: #DCFCE7; --tui-ok-bd: #228B4E;
+  --tui-warn-fg: #7C4700; --tui-warn-bg: #FEF3C7; --tui-warn-bd: #D97706;
+  --tui-danger-fg: #991B1B; --tui-danger-bg: #FEE2E2; --tui-danger-bd: #DC2626;
+  --tui-special-fg: #4C1D95; --tui-special-bg: #EDE9FE; --tui-special-bd: #7C3AED;
+  --tui-hover-bg: #F8FAFC; --tui-sel-bg: #E3EFFB; --tui-plan-bg: #F2F9F5; --tui-stale-bg: #FFF9EB;
+  --tui-accent-tint: #F4F8FC; --tui-accent-line: #B8D4EE; --tui-danger-line: #E5B4B4; --tui-warn-ink: #92400E;
+  --tui-sans: 'Public Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --tui-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --tui-fs-cap: 10px; --tui-fs-pill: 10.5px; --tui-fs-data: 11px; --tui-fs-body: 12px; --tui-fs-title: 13.5px;
+  --tui-radius: 3px; --tui-control-h: 27px;
+  --tui-shadow: 0 1px 2px rgba(20, 27, 36, 0.04);
+}
+
+/* ---- root + text ---------------------------------------------------------------------------- */
+.anvil-role-tui {
+  font-family: var(--tui-sans); font-size: var(--tui-fs-body); line-height: 1.38; color: var(--tui-ink);
+  background: var(--tui-canvas); padding: 10px 14px 22px 14px; box-sizing: border-box;
+}
+.anvil-role-tui *, .anvil-role-tui *::before, .anvil-role-tui *::after { box-sizing: border-box; }
+.anvil-role-tui .anvil-label, .anvil-role-tui a.anvil-component { font-size: inherit; line-height: inherit; }
+.anvil-role-tui .label-text, .anvil-role-tui .link-text {
+  padding: 2px 0 !important; font-size: inherit; line-height: inherit;
+}
+.anvil-role-tui a.anvil-component { color: var(--tui-accent); text-decoration: none; }
+.anvil-role-tui a.anvil-component:hover .link-text { text-decoration: underline; }
+.anvil-role-tui .anvil-role-tui-meta { font-family: var(--tui-mono); font-size: var(--tui-fs-data); color: var(--tui-muted); }
+/* Text tones are not scoped to a tui root: they work anywhere (popups included) and, being a
+   deliberate statement about one word, always win over a container's default colour. */
+.anvil-role-tui-late, .anvil-datepicker.anvil-role-tui-late input { color: var(--tui-danger-fg) !important; font-weight: 700; }
+.anvil-role-tui-text-warn { color: var(--tui-warn-fg) !important; }
+.anvil-role-tui-text-danger { color: var(--tui-danger-fg) !important; }
+.anvil-role-tui-text-ok { color: var(--tui-ok-fg) !important; }
+.anvil-role-tui-text-info { color: var(--tui-info-fg) !important; }
+.anvil-role-tui-text-special { color: var(--tui-special-fg) !important; }
+.anvil-role-tui-text-muted { color: var(--tui-muted) !important; }
+
+/* ---- buttons -------------------------------------------------------------------------------- */
+.anvil-role-tui .anvil-button > button.btn {
+  font-family: var(--tui-sans); font-size: var(--tui-fs-body); font-weight: 600; line-height: 1.2;
+  padding: 5px 12px !important; margin: 0; min-height: 0; height: auto;
+  border: 1px solid var(--tui-line-strong); border-radius: var(--tui-radius);
+  background: var(--tui-card); color: var(--tui-ink);
+  box-shadow: 0 1px 1px rgba(20, 27, 36, 0.05); text-transform: none; letter-spacing: 0.01em;
+}
+.anvil-role-tui .anvil-button > button.btn .button-text { padding: 0; }
+.anvil-role-tui .anvil-button > button.btn i { font-size: var(--tui-fs-data); color: var(--tui-muted); }
+.anvil-role-tui .anvil-button > button.btn:hover { background: var(--tui-chrome); border-color: var(--tui-ink-soft); }
+.anvil-role-tui .anvil-button > button.btn:disabled { opacity: 0.45; }
+.anvil-role-tui .anvil-role-tui-primary > button.btn {
+  background: var(--tui-accent); color: var(--tui-accent-ink); border-color: var(--tui-accent); font-weight: 700;
+}
+.anvil-role-tui .anvil-role-tui-primary > button.btn i { color: var(--tui-accent-ink); }
+.anvil-role-tui .anvil-role-tui-primary > button.btn:hover:not(:disabled) { background: var(--tui-accent-hover); }
+.anvil-role-tui .anvil-role-tui-danger > button.btn { color: var(--tui-danger-fg); }
+.anvil-role-tui .anvil-role-tui-danger > button.btn:hover { background: var(--tui-danger-bg); border-color: var(--tui-danger-fg); }
+
+/* ---- inputs --------------------------------------------------------------------------------- */
+.anvil-role-tui input.form-control, .anvil-role-tui .anvil-datepicker input,
+.anvil-role-tui input.form-control:hover, .anvil-role-tui .anvil-datepicker input:hover,
+.anvil-role-tui input.form-control:focus, .anvil-role-tui .anvil-datepicker input:focus,
+.anvil-role-tui .anvil-dropdown select.form-control {
+  font-family: var(--tui-sans); font-size: var(--tui-fs-body); line-height: 1.2;
+  height: var(--tui-control-h); padding: 2px 8px; margin: 0;
+  border: 1px solid var(--tui-line-strong); border-radius: var(--tui-radius);
+  background: var(--tui-card); color: var(--tui-ink); box-shadow: none;
+}
+.anvil-role-tui input.form-control:focus, .anvil-role-tui .anvil-datepicker input:focus,
+.anvil-role-tui .anvil-dropdown select.form-control:focus {
+  border-color: var(--tui-accent); box-shadow: 0 0 0 2px var(--tui-accent-soft); outline: none;
+}
+.anvil-role-tui input.form-control::placeholder { color: var(--tui-muted); }
+.anvil-role-tui input.form-control[disabled], .anvil-role-tui .anvil-datepicker input[disabled] {
+  background: var(--tui-chrome); color: var(--tui-muted);
+}
+.anvil-role-tui .anvil-dropdown select.form-control { padding-right: 24px; font-weight: 500; }
+.anvil-role-tui .anvil-dropdown form:before {
+  line-height: var(--tui-control-h); padding: 0 8px; font-size: 9px; color: var(--tui-muted);
+}
+.anvil-role-tui .checkbox { margin: 0; min-height: 0; }
+.anvil-role-tui .checkbox label {
+  padding: 0; min-height: 0; font-size: var(--tui-fs-body); line-height: 1.3; color: var(--tui-ink-soft);
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.anvil-role-tui .checkbox input[type=checkbox] {
+  position: static; margin: 0; width: 13px; height: 13px; accent-color: var(--tui-accent);
+  appearance: auto; -webkit-appearance: checkbox; display: inline-block;
+  background: none; border: 0; border-radius: 0;
+}
+
+/* ---- toolbar strip ---------------------------------------------------------------------------- */
+/* padding and margin are !important: spacing set on the panel in the designer arrives as an
+   inline style and would otherwise win (v0.1.0: a strip with designer padding-top 0 let its
+   chips touch the top border). Wrapped rows keep a 6px gap. */
+.anvil-role-tui .anvil-role-tui-toolbar {
+  padding: 6px 11px !important; margin: 0 0 6px 0 !important;
+  background: var(--tui-card); border: 1px solid var(--tui-line-strong);
+  border-radius: 4px; box-shadow: var(--tui-shadow);
+}
+.anvil-role-tui .anvil-role-tui-toolbar .flow-panel-item { margin-top: 0; margin-bottom: 0; }
+.anvil-role-tui .anvil-role-tui-toolbar .flow-panel-gutter { align-items: center; row-gap: 6px; }
+.anvil-role-tui .anvil-role-tui-toolbar .anvil-component { margin-top: 0; margin-bottom: 0; }
+
+/* ---- chips ------------------------------------------------------------------------------------ */
+.anvil-role-tui a.anvil-role-tui-chip {
+  display: inline-flex; align-items: center; height: 24px; padding: 0 9px !important;
+  border: 1px solid var(--tui-line-strong); border-radius: var(--tui-radius);
+  background: var(--tui-chrome); color: var(--tui-ink-soft);
+  font-family: var(--tui-mono); font-size: var(--tui-fs-data); font-weight: 600; white-space: nowrap;
+}
+.anvil-role-tui a.anvil-role-tui-chip .link-text { padding: 0 !important; }
+.anvil-role-tui a.anvil-role-tui-chip:hover { background: var(--tui-card); color: var(--tui-ink); border-color: var(--tui-accent); }
+.anvil-role-tui a.anvil-role-tui-chip:hover .link-text { text-decoration: none; }
+.anvil-role-tui a.anvil-role-tui-chip.anvil-role-tui-on,
+.anvil-role-tui a.anvil-role-tui-chip.anvil-role-tui-on:hover {
+  background: var(--tui-accent); color: var(--tui-accent-ink); border-color: var(--tui-accent);
+}
+
+/* ---- pills ------------------------------------------------------------------------------------ */
+.anvil-role-tui .anvil-role-tui-pill {
+  display: inline-flex; align-items: center; gap: 5px; width: auto; padding: 1px 7px;
+  border: 1px solid var(--tui-neutral-bd); border-radius: var(--tui-radius);
+  background: var(--tui-neutral-bg); color: var(--tui-neutral-fg);
+  font-family: var(--tui-mono); font-size: var(--tui-fs-pill); font-weight: 600; line-height: 1.45; white-space: nowrap;
+}
+.anvil-role-tui .anvil-role-tui-pill::before {
+  content: ""; width: 6px; height: 6px; border-radius: 1px; background: currentColor; flex: none;
+}
+.anvil-role-tui .anvil-role-tui-pill .label-text, .anvil-role-tui .anvil-role-tui-pill .link-text { padding: 0 !important; }
+.anvil-role-tui .anvil-role-tui-pill.anvil-role-tui-neutral::before { background: transparent; border: 1.5px solid currentColor; }
+.anvil-role-tui .anvil-role-tui-pill.anvil-role-tui-info { background: var(--tui-info-bg); color: var(--tui-info-fg); border-color: var(--tui-info-bd); }
+.anvil-role-tui .anvil-role-tui-pill.anvil-role-tui-ok { background: var(--tui-ok-bg); color: var(--tui-ok-fg); border-color: var(--tui-ok-bd); }
+.anvil-role-tui .anvil-role-tui-pill.anvil-role-tui-warn { background: var(--tui-warn-bg); color: var(--tui-warn-fg); border-color: var(--tui-warn-bd); }
+.anvil-role-tui .anvil-role-tui-pill.anvil-role-tui-danger { background: var(--tui-danger-bg); color: var(--tui-danger-fg); border-color: var(--tui-danger-bd); }
+.anvil-role-tui .anvil-role-tui-pill.anvil-role-tui-special { background: var(--tui-special-bg); color: var(--tui-special-fg); border-color: var(--tui-special-bd); }
+.anvil-role-tui .anvil-role-tui-pill.anvil-role-tui-void { background: var(--tui-card); color: var(--tui-neutral-fg); border-color: var(--tui-neutral-fg); }
+.anvil-role-tui .anvil-role-tui-pill.visible-false { display: none; }
+
+/* ---- data grid -------------------------------------------------------------------------------- */
+.anvil-role-tui .anvil-data-grid {
+  background: var(--tui-card); border: 1px solid var(--tui-line-strong); border-radius: 4px;
+  box-shadow: var(--tui-shadow); font-size: var(--tui-fs-body);
+}
+.anvil-role-tui .anvil-data-grid > .data-grid-child-panel > div.auto-grid-header {
+  background: var(--tui-chrome-2); border-bottom: 2px solid var(--tui-line-strong);
+  font-family: var(--tui-mono); font-size: var(--tui-fs-data); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em; color: var(--tui-ink-soft);
+}
+.anvil-role-tui .anvil-data-grid > .data-grid-child-panel > div.auto-grid-header div.data-row-col,
+.anvil-role-tui .anvil-data-grid > .data-grid-child-panel > div.auto-grid-header div.data-row-col > div {
+  background: var(--tui-chrome-2); font-size: inherit; font-weight: inherit; color: inherit;
+}
+.anvil-role-tui .anvil-data-grid > .data-grid-child-panel > div.auto-grid-header div.data-row-col { padding: 6px 8px; }
+.anvil-role-tui .anvil-data-grid > .data-grid-child-panel > div.auto-grid-header div.data-row-col > div {
+  padding: 0; min-height: 0; text-align: left !important;
+}
+.anvil-role-tui .anvil-data-grid .repeating-panel div.data-row-col { padding: 4px 8px; }
+.anvil-role-tui .anvil-data-grid .anvil-data-row-panel { border-bottom: 1px solid var(--tui-line); }
+.anvil-role-tui .anvil-data-grid .repeating-panel .anvil-data-row-panel { background-color: var(--tui-card); }
+/* grid cells carry no vertical margins or text padding, whatever the designer set: rows stay dense */
+.anvil-role-tui .anvil-data-grid .data-row-col .anvil-component { margin-top: 0 !important; margin-bottom: 0 !important; }
+.anvil-role-tui .anvil-data-grid .data-row-col .label-text,
+.anvil-role-tui .anvil-data-grid .data-row-col .link-text { padding: 0 !important; }
+.anvil-role-tui .anvil-data-grid .repeating-panel .data-row-col { font-family: var(--tui-mono); font-size: var(--tui-fs-data); }
+.anvil-role-tui .anvil-data-grid .repeating-panel .anvil-data-row-panel:hover,
+.anvil-role-tui .anvil-data-grid .repeating-panel .anvil-data-row-panel:hover .data-row-col { background-color: var(--tui-hover-bg); }
+.anvil-role-tui .anvil-data-grid .anvil-data-row-panel.anvil-role-tui-row-plan,
+.anvil-role-tui .anvil-data-grid .anvil-data-row-panel.anvil-role-tui-row-plan .data-row-col { background-color: var(--tui-plan-bg); }
+.anvil-role-tui .anvil-data-grid .anvil-data-row-panel.anvil-role-tui-row-stale,
+.anvil-role-tui .anvil-data-grid .anvil-data-row-panel.anvil-role-tui-row-stale .data-row-col { background-color: var(--tui-stale-bg); }
+.anvil-role-tui .anvil-data-grid .data-row-col input.form-control,
+.anvil-role-tui .anvil-data-grid .data-row-col .anvil-datepicker input {
+  height: 22px; padding: 1px 6px; font-family: var(--tui-mono); font-size: var(--tui-fs-data);
+}
+.anvil-role-tui .anvil-data-grid .data-row-col .anvil-button > button.btn { padding: 2px 9px !important; font-size: var(--tui-fs-data); }
+.anvil-role-tui .anvil-data-grid .data-grid-footer-panel { background: var(--tui-chrome); border-top: 1px solid var(--tui-line-strong); }
+.anvil-role-tui .data-grid-footer-panel .anvil-role-outlined-card {
+  border: 0 !important; border-radius: 0; box-shadow: none; padding: 0 !important; background: transparent !important;
+}
+.anvil-role-tui .data-grid-footer-panel .column-panel { margin: 0; }
+.anvil-role-tui .data-grid-footer-panel .flow-panel { padding: 3px 10px; }
+.anvil-role-tui .data-grid-footer-panel a.anvil-component, .anvil-role-tui .data-grid-footer-panel .anvil-label,
+.anvil-role-tui .data-grid-footer-panel .label-text, .anvil-role-tui .data-grid-footer-panel .link-text {
+  font-family: var(--tui-mono); font-size: var(--tui-fs-data); font-style: normal; color: var(--tui-muted);
+}
+/* ==== TITAN-UI END ============================================================================= */

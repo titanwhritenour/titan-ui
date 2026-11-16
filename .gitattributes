@@ -1,0 +1,6 @@
+# The style block is compared byte-for-byte: keep these files LF in the repository
+# and on every machine.
+*.css text eol=lf
+*.py  text eol=lf
+*.md  text eol=lf
+*.yml text eol=lf

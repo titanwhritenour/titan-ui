@@ -1,0 +1,28 @@
+# Titan house-style check. Copy this file, unchanged, to
+#   .github/workflows/titan-ui.yml
+# in an Anvil app's repository. It runs on every push (the Anvil editor's pushes included)
+# and can be started by hand from the repository's Actions tab.
+# It fetches the checker and the canonical style block from titanwhritenour/titan-ui, so an
+# app cannot pass by editing its own copy of the rules.
+name: titan-ui check
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: App
+        uses: actions/checkout@v4
+      - name: titan-ui (checker + canonical block)
+        uses: actions/checkout@v4
+        with:
+          repository: titanwhritenour/titan-ui
+          path: .titan-ui
+      - name: Check
+        run: python3 .titan-ui/check.py .

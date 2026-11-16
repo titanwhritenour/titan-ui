@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+
+# Cowork -> editor-agent handoff (never committed)
+SPEC.md

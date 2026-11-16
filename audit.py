@@ -26,6 +26,9 @@ What a run can report
 DRIFT findings stay listed under STILL OPEN on every later run until they are fixed or
 their key is added to accepted.txt.
 
+The navigation shell (the NavSidebar form) is not styled by titan-ui yet, so it is never
+reported as "not on titan-ui" and a change to its layout is not a WATCH.
+
 The first line printed is a one-line summary, for whoever runs this on a schedule.
 The team mirror only holds what each developer has published to the share: a change that
 was never published cannot be seen here.
@@ -38,6 +41,14 @@ import check  # noqa: E402
 
 GROUPS = (('mine', 'current_anvil_code'), ('team', 'team_anvil_code'))
 SKIP_DIRS = ('.git', '__pycache__', '.titan-ui')
+# The navigation shell is not styled by titan-ui yet: the app bar and the NavSidebar custom
+# component stay stock Material Design 3 in every app, the blank app template included. So a
+# shell form is not counted as "not on titan-ui", and adding a nav button is not a rework.
+SHELL_FORMS = ('NavSidebar',)
+
+
+def is_shell(form):
+    return form.split('/')[-1] in SHELL_FORMS
 
 
 def sha(*paths):
@@ -120,7 +131,7 @@ def scan(root):
 
 
 def m3_forms(s):
-    return sorted(f for f, v in s['forms'].items() if v['look'] == 'm3')
+    return sorted(f for f, v in s['forms'].items() if v['look'] == 'm3' and not is_shell(f))
 
 
 def error_line(key, s, g):
@@ -143,7 +154,7 @@ def compare(old, new):
                 drift.append((f'{key}|new-app', f"{key}: new app with {len(left)} of {len(n['forms'])} forms "
                               'not on titan-ui (new apps are built on titan-ui)'))
             else:
-                good.append(f"{key}: new app, every form on titan-ui")
+                good.append(f"{key}: new app, built on titan-ui")
             for g in sorted(n['errors']):
                 drift.append((f'{key}|err|{g}', error_line(key, n, g)))
             continue
@@ -174,6 +185,8 @@ def compare(old, new):
                 if was:
                     renamed.add(was)
                     info.append(f'{key}: form {was} renamed to {f}')
+                elif is_shell(f):
+                    info.append(f'{key}: navigation form {f} added')
                 elif v['look'] == 'm3':
                     drift.append((f'{key}|new-form|{f}', f'{key}: new form {f} is not on titan-ui (new forms are built on titan-ui)'))
                 else:
@@ -183,7 +196,7 @@ def compare(old, new):
             elif ov['look'] == 'tui' and v['look'] == 'm3':
                 drift.append((f'{key}|reverted|{f}', f'{key}: form {f} went from titan-ui back to Material Design 3 (the move is one-way)'))
             elif v['look'] == 'm3':
-                if v['layout'] != ov['layout']:
+                if v['layout'] != ov['layout'] and not is_shell(f):
                     watch.append(f'{key}: layout of Material Design 3 form {f} changed. If this was a rework, the form should have moved to titan-ui.')
                 if v['colours'] > ov['colours']:
                     watch.append(f"{key}: hand-set colours in Material Design 3 form {f} rose from {ov['colours']} to {v['colours']}")

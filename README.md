@@ -74,6 +74,10 @@ never changes an app. It writes its snapshot and reports to `all_apps\titan-ui-a
 The mirror only holds what each developer has published to the share, so a change that was
 never published cannot be seen. `--no-save` reports without updating the snapshot.
 
+The navigation shell (the app bar and the `NavSidebar` form) is not styled by titan-ui yet.
+It stays stock Material Design 3 in every app, so the audit never reports `NavSidebar` as
+"not on titan-ui" and does not treat a new nav button as a rework.
+
 ## Changing the style
 Only here, and only with the owner's approval (Dave Whritenour).
 1. Edit `titan-ui.css`; raise the version on its first line.

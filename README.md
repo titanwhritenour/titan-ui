@@ -7,6 +7,7 @@ One look for every Titan app. This repository is the single source.
 | `titan-ui.css` | The canonical TITAN-UI block. It is copied, unchanged, into every app's `theme/assets/theme.css`. Its first line carries the version. |
 | `check.py` | The checker. Reads an app and reports every breach with file and line. Read-only, standard library only. |
 | `for-app-repos/titan-ui.yml` | The GitHub workflow each app repository carries so the check runs on every push. |
+| `audit.py` | The audit. Runs the same rules over every app folder at once and reports only what changed since its last run. |
 
 ## How a form uses the style
 1. Give the form's top content panel the role `tui` (a custom-HTML form puts the class
@@ -55,6 +56,23 @@ next touched.
 
 An app is exempt only when its root holds a file `.titan-ui-exempt` whose first line gives
 the reason.
+
+## Audit every app at once
+    py -3 audit.py "D:\cowork\projects\all_apps"
+Reads every Anvil app under `current_anvil_code` and `team_anvil_code` (the mirror of the
+share), compares with the snapshot of the previous run, and reports only what changed. It
+never changes an app. It writes its snapshot and reports to `all_apps\titan-ui-audit`.
+
+- DRIFT, a rule is broken: a new error from the check; a new form or a new app that is not
+  titan-ui; a titan-ui form that went back to Material Design 3; an app that marked itself
+  exempt. A DRIFT finding stays listed as STILL OPEN on every run until it is fixed, or the
+  owner accepts it by adding its key to `titan-ui-audit\accepted.txt`.
+- WATCH, a person should look: the layout of a Material Design 3 form changed (if that was a
+  rework, the form should have moved to titan-ui); more hand-set colours; `theme.css` changed.
+- GOOD: a form moved to titan-ui; an error was cleared; an app adopted the block.
+
+The mirror only holds what each developer has published to the share, so a change that was
+never published cannot be seen. `--no-save` reports without updating the snapshot.
 
 ## Changing the style
 Only here, and only with the owner's approval (Dave Whritenour).

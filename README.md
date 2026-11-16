@@ -36,7 +36,11 @@ State is never colour alone: a pill, chip or late value always carries its word.
 Exit code 1 when an app has an ERROR. `--strict` also fails on legacy (unconverted) forms.
 
 ## What it checks
-- R1 the app's `theme.css` contains the TITAN-UI block
+A form may be in one of two looks only: stock Material Design 3, or titan-ui. An app with no
+titan-ui form and no block passes: the Material Design 3 rules apply to it (the check does not
+verify that its theme is stock), and its forms are listed as LEGACY until they move over.
+
+- R1 an app with any titan-ui form carries the TITAN-UI block in its `theme.css`
 - R2 the block is byte-identical to `titan-ui.css` here
 - R3 `theme/parameters.yaml` registers every `tui` role
 - R4 no colour codes in `theme.css` after the block

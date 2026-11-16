@@ -7,8 +7,12 @@ Reads only; changes nothing. Standard library only. Exit code 1 when an app has 
 ERROR (a broken rule in the shared block, or in a form that has opted in), else 0.
 With --strict, legacy findings (forms not converted yet) also fail.
 
+A form may be in one of two looks only: stock Material Design 3, or the Titan house style
+(titan-ui). An app with no titan-ui form and no block passes (the Material Design 3 rules apply to it; this check does
+not verify that its theme is stock); its forms are listed as LEGACY until they move over.
+
 Rules
-  R1  theme/assets/theme.css contains the TITAN-UI block
+  R1  an app with any titan-ui form carries the TITAN-UI block in theme/assets/theme.css
   R2  the block is byte-identical to titan-ui.css next to this script
   R3  theme/parameters.yaml registers every tui role
   R4  no colour codes in theme.css after the block (app CSS uses tokens)
@@ -165,6 +169,11 @@ def check_app(app, canon):
     res['errors'], res['info'] = check_theme(app, canon)
     forms, modules = forms_of(app)
     opted = {k for k, f in forms.items() if form_opted_in(app, f)}
+    if not opted and res['errors'] == ['R1 no TITAN-UI block in theme.css']:
+        # nothing has moved to titan-ui yet: a Material Design 3 app, which is permitted
+        res['errors'] = []
+        res['info']['look'] = ('no titan-ui form yet - the Material Design 3 rules apply '
+                               '(this check does not verify that the theme is stock)')
     for k in sorted(forms):
         finds = form_findings(forms[k])
         if k in opted:
@@ -198,6 +207,8 @@ def main(argv):
             print('   EXEMPT: ' + r['exempt'] if 'exempt' in r else '   SKIPPED: ' + r['skipped'])
             continue
         i = r['info']
+        if i.get('look'):
+            print('   ' + i['look'])
         print(f"   block {i.get('block_version', 'none')} | stock base {i.get('stock_base_sha')} | "
               f"forms: {len(r['converted'])} converted, {len(r['legacy'])} legacy "
               f"({sum(r['legacy'].values())} colour findings in legacy forms) | "
@@ -222,7 +233,7 @@ def main(argv):
         if 'exempt' in r or 'skipped' in r:
             print(f"  {r['app']} | " + ('exempt' if 'exempt' in r else 'skipped'))
             continue
-        print(f"  {r['app']} | {r['info'].get('block_version', 'none')} | {len(r['converted'])} / {len(r['legacy'])} | "
+        print(f"  {r['app']} | {r['info'].get('block_version') or 'none (M3 rules)'} | {len(r['converted'])} / {len(r['legacy'])} | "
               f"{len(r['errors'])} | {sum(r['legacy'].values())}")
     print('\nRESULT: ' + ('FAIL' if bad else 'PASS'))
     return 1 if bad else 0
